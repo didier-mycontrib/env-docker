@@ -1,0 +1,289 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>tp</groupId>
+  <artifactId>test_docker</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.1.RELEASE</version>
+	</parent>
+  
+ 
+  <repositories>
+    <repository>
+      <id>Jahia</id>
+    <url>http://maven.jahia.org/maven2/</url> <!-- for com.oracle:ojdbc6:1.1.0.7.0 -->
+     </repository>
+  </repositories>
+  
+  
+   <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+		
+		 <!-- herite de spring-boot-starter-parent et spring-boot-dependencies -->   
+         <!-- 		 
+          <hibernate.version>5.0.11.Final</hibernate.version>
+   		  <hibernate-entitymanager.version>5.0.11.Final</hibernate-entitymanager.version>
+   		  <spring.version>4.3.3.RELEASE</spring.version>
+   		 ...
+   		 -->   
+  </properties>
+  
+  <dependencies>
+  
+   <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>			
+			<scope>test</scope>
+		</dependency>		
+		<!-- 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+	    -->	
+  
+  <dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId> <!-- h2 est par certains cotes un peu mieux que hsqldb -->
+			<version>1.4.192</version> <!-- en accord avec  spring boot 1.4.1.RELEASE --> 
+		</dependency>
+  
+  <dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+  </dependency>
+  
+  <dependency>
+    <groupId>postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>9.1-901-1.jdbc4</version>
+ </dependency>
+ 
+<dependency>
+    <groupId>com.oracle</groupId>
+    <artifactId>ojdbc6</artifactId>
+    <version>11.1.0.7.0</version>
+</dependency>
+  
+  <dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<!-- <version>4.12</version> , via spring boot -->
+			<scope>test</scope>
+</dependency>
+
+     <dependency>
+       	 <groupId>org.slf4j</groupId>
+       	 <artifactId>slf4j-api</artifactId>
+      	  <scope>compile</scope>
+      	  <!-- <version>1.7.21</version> , via spring boot -->
+    </dependency>
+    
+    <dependency>
+    		<groupId>ch.qos.logback</groupId>
+    		<artifactId>logback-classic</artifactId>
+    		<!-- <version>1.1.7</version>, via spring boot -->
+	</dependency>
+	
+<!-- in order to generate automatic getter, setter -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <!-- <version>1.16.10</version> , via spring boot -->
+</dependency>
+
+        <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<!-- with indirect/transitive <artifactId>hibernate-core</artifactId> -->
+			<!-- <version>${org.hibernate.version}</version> , via spring-boot -->
+		</dependency>
+		
+		 <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		
+		<!--  <artifactId>spring-core</artifactId>
+         et <artifactId>spring-beans</artifactId>
+         et <artifactId>spring-aop</artifactId>
+          sont indirectement lies a spring-context -->
+
+	
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<!-- <version>${org.springframework.version}</version> , via spring-boot -->
+			<scope>compile</scope>
+		</dependency>
+		
+		<!-- <artifactId>spring-tx</artifactId> et 
+		     <artifactId>spring-jdbc</artifactId> sont indirectement lies a spring-orm -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<!-- <version>${org.springframework.version}</version> , via spring-boot -->
+			<scope>compile</scope>
+		</dependency> 
+		
+		
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<!-- <version>${org.springframework.version}</version> , via spring-boot -->
+			<scope>test</scope>
+		</dependency>
+		
+    	
+  
+  </dependencies>
+  
+    
+   <build>
+   
+   <finalName>${project.artifactId}</finalName>
+		<plugins>
+		   <!-- configuration (enventuellement heritee) pour compilation en java 7 ou 8 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5</version>
+				<configuration>
+				    <compilerVersion>1.8</compilerVersion>
+					<source>1.8</source>
+					<target>1.8</target>
+					<!-- <compilerArgument>-proc:none</compilerArgument> : 
+					     surtout pas -proc:none sinon @Getter, @Getter are not pre-processed !!!
+					     (meme si lombok.jar dans classpath / as dependency artifact)  -->
+				</configuration>
+			</plugin>
+			
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>tp.app.MyApp</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      
+      <!-- lombok-maven-plugin and delombok is not necessary : 
+      lombok run fine with IDE (ex:eclipse) after installing agent via java -jar lombok....jar
+       AND lombok run fine with maven without eclipse since java 6 -->
+      <!-- 
+     <plugin>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-maven-plugin</artifactId>
+         <version>1.16.10.0</version>
+         <executions>
+           <execution>
+	          <phase>generate-sources</phase>
+	          <goals>
+	            <goal>delombok</goal>
+	          </goals>
+          </execution>
+       </executions>
+     </plugin>
+		-->	
+			
+			
+
+<plugin>
+  <groupId>io.fabric8</groupId>
+  <artifactId>docker-maven-plugin</artifactId>
+  <version>0.15.7</version>
+
+  <configuration>
+     <images>
+    <image>
+      <alias>my-java-app</alias> 
+      <name>tp/test-docker:1</name>
+
+      <build> 
+         <from>java:8</from>  
+         <assembly>
+           <descriptor>docker-assembly.xml</descriptor> 
+         </assembly>
+         <cmd> 
+            <shell>java  -jar /maven/${project.artifactId}.jar</shell> <!--   -cp "/maven/*" or classpath in maven built META-INF/MANIFEST -->
+         </cmd>
+      </build>
+     <!-- 
+        <run> 
+         <ports> 
+           <port>tomcat.port:8080</port>
+         </ports>
+         <wait> 
+           <http>
+              <url>http://localhost:${tomcat.port}/access</url>
+           </http>
+           <time>10000</time>
+         </wait>
+         <links> 
+           <link>database:db</link>
+         </links>
+       </run>
+       -->
+    </image>
+   <!-- 
+    <image>
+      <alias>database</alias> 
+      <name>postgres:9</name>
+      <run>
+        <wait> 
+          <log>database system is ready to accept connections</log>
+          <time>20000</time>
+        </wait>
+      </run>
+    </image>
+    -->
+  </images>
+  </configuration>
+
+  <!-- Connect start/stop to pre- and
+       post-integration-test phase, respectively if you want to start
+       your docker containers during integration tests -->
+  <executions>
+    <execution>
+       <id>start</id>
+       <phase>pre-integration-test</phase>
+       <goals>
+         <!-- "build" should be used to create the images with the
+              artifact -->
+         <goal>build</goal>
+         <goal>start</goal>
+       </goals>
+    </execution>
+    <execution>
+       <id>stop</id>
+       <phase>post-integration-test</phase>
+       <goals>
+         <goal>stop</goal>
+      </goals>
+    </execution>
+  </executions>
+</plugin>
+
+			
+			
+			
+			
+		</plugins>
+	</build>
+  
+</project>

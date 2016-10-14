@@ -6,7 +6,6 @@
 
 export MYSQL_SCRIPTS=/scripts
 
-
 docker exec mysql-container bash -c ${MYSQL_SCRIPTS}/init-db.sh
 
 echo pause; read pause;

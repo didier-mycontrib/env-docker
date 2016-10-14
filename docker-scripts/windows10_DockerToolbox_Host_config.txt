@@ -2,5 +2,5 @@ C:\Users\didier (with user=didier )
                ~  where ~ = $HOME = /c/Users/didier 
 in C:\Users\didier, 3 sub-directories:
    docker-images (MKLINK /J docker-images c:\ext\docker-images)
-   docker-scripts (copie)
+   docker-scripts (copie via git ou ...)
    storage

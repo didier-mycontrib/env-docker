@@ -1,0 +1,3 @@
+le répertoire "docker-scripts" à coté de ce projet maven 
+dans le referentiel git "env-docker" comporte des scripts
+pour mysql , postgresql , oracle

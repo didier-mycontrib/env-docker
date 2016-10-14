@@ -1,4 +1,0 @@
-/home/poweruser/Bureau
-   with docker-scripts sub-directory
-
-and /storage/docker/ for persistent data storage (mysql , postgres , ...) 

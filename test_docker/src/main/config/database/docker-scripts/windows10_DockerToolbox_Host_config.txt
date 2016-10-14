@@ -1,6 +1,0 @@
-C:\Users\didier\dock (with user=didier and "dock" as an example of sub-directory)
-               ~/dock/  where ~ = $HOME = /c/Users/didier 
-in C:\Users\didier\dock , 3 sub-directories:
-   docker-images
-   docker-scripts
-   storage

@@ -1,0 +1,9 @@
+package tp.dao.customers;
+
+import org.mycontrib.generic.persistence.GenericDao;
+
+import tp.entity.customers.Customer;
+
+public interface CustomerDAO extends GenericDao<Customer,Long>{
+
+}

@@ -30,9 +30,3 @@ END;
 
 COMMIT;
 
-INSERT INTO Customer(name)  VALUES ('first oracle customer');
-INSERT INTO Customer(name)  VALUES ('second oracle customer');
-
-COMMIT;
-
-select * from Customer;

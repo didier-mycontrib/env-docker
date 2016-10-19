@@ -1,0 +1,23 @@
+package tp.dao.customers.jpa;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.mycontrib.generic.persistence.AbstractGenericDaoJpaImpl;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import tp.dao.customers.CustomerDAO;
+import tp.entity.customers.Customer;
+
+@Component
+
+@Transactional("customersTransactionManager")
+public class CustomerDaoJpa  extends AbstractGenericDaoJpaImpl<Customer,Long>   implements CustomerDAO{
+	
+	@PersistenceContext(unitName="customers")
+	public void setEntityManager(EntityManager em){
+		this.entityManager=em;
+	}
+
+}

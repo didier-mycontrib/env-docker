@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" 
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm 
+                 http://java.sun.com/xml/ns/persistence/orm_2_0.xsd" 
+                 version="2.0">
+
+<package>tp.entity</package>
+
+<!-- ce fichier .orm (pour oracle) permet de redéfinir (en xml)
+    une auto-incrementation à base de Sequence oracle , plutôt que le IDENTITY (par defaut via @GeneratedValue)
+     -->
+     
+<!-- syntaxe en version "annotations":
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,  generator = "customer_seq_generator")
+    @SequenceGenerator(name = "customer_seq_generator",  sequenceName = "customer_seq" , allocationSize=1)
+ -->     
+
+<entity class="Customer" access="FIELD">
+    	<!-- <table name="Customer"/> -->
+        <attributes>            
+            <id name="id" >
+                  <column name="id" />
+                  <generated-value strategy="SEQUENCE" generator = "customer_seq_generator" />
+                  <sequence-generator name = "customer_seq_generator"
+                                      sequence-name = "customer_seq" 
+                                      allocation-size='1' /> 
+            </id>
+            <!-- 
+            <basic name="name">
+                <column name="name" length="64"/>
+            </basic>
+            ... -->
+        </attributes>    
+</entity>
+</entity-mappings>

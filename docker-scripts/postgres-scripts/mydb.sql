@@ -10,7 +10,7 @@ CREATE TABLE Customer
 	(id SERIAL primary key ,
          name VARCHAR(64));
 
-INSERT INTO Customer(id,name)  VALUES (1 , 'first customer');
+INSERT INTO Customer(name)  VALUES ( 'first postgresql customer');
 
 
 select * from Customer;

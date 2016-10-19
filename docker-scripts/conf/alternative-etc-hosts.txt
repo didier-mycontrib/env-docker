@@ -1,0 +1,10 @@
+127.0.0.1	localhost
+127.0.1.1	myUbuntu
+
+# pour tests/utilisations directes des conteneurs docker sans option --link
+# NB: adresses IPs selon "docker inspect xyz-container | grep IPAddress"
+# 172.17.0.2 , 172.17.0.3 , 172.17.0.4 , ...
+
+172.17.0.2	mysqlHost
+#172.17.0.2	postgresHost
+#172.17.0.2 oracleHost

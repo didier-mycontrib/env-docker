@@ -1,7 +1,11 @@
 package tp.standalone.boot;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -24,13 +28,13 @@ public class Boot {
 		// on prépare la configuration de l'application en mode spring-boot
 		SpringApplication app = new SpringApplication(DomainServiceConfig.class);
 		
+		
 		app.setWebEnvironment(false);
 		//app.setLogStartupInfo(false);
 		
 		//setting profile (context.getEnvironment().setActiveProfiles("...") ) :
-		app.setAdditionalProfiles("default" , "mysql"  , "jta"); 
-		//app.setAdditionalProfiles("default" , "oracle" ); 
-		//app.setAdditionalProfiles("default" , "h2" ); 
+		app.setAdditionalProfiles("default"  , "jta"); 
+		//app.setAdditionalProfiles("default"  , "no-jta"); 
 		
 		// on lance l'application spring
 		ConfigurableApplicationContext context =  app.run(args);
@@ -38,7 +42,25 @@ public class Boot {
 		try {
 			
 		// appels specifiques:
-		
+			
+			
+			DataSource ds1 = (DataSource) context.getBean("customersDataSource");
+			Connection cn = ds1.getConnection();
+			   ResultSet rs = cn.createStatement().executeQuery("select * from Customer");
+			   if(rs.next()){
+				   System.out.println("email of customer="+rs.getString("email"));
+			   }
+			rs.close();cn.close();
+			
+			DataSource ds2 = (DataSource) context.getBean("ordersDataSource");
+			Connection cn2 = ds2.getConnection();
+			   ResultSet rs2 = cn2.createStatement().executeQuery("select * from OrderLine");
+			   if(rs2.next()){
+				   System.out.println("id of orderLine="+rs2.getString("orderId"));
+			   }
+			rs2.close();cn2.close();
+			
+			
 			/* 
 			//ancienne version (sans spring-data et dao automatique :
 			CustomerDAO customerDao = context.getBean(CustomerDAO.class);
@@ -47,6 +69,7 @@ public class Boot {
 			System.out.println("savedCustomer (via dao): "+savedCustomer2.toString());
 			System.out.println("reloded customer (via dao): " + customerDao.getEntityById(savedCustomer2.getId()).toString());
 			*/
+			
 			
 			CustomerRepository customerRepository = context.getBean(CustomerRepository.class);
 			System.out.println("customer  (via spring-data): " + customerRepository.findOne(1L).toString());

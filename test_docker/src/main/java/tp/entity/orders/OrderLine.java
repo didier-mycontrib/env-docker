@@ -22,7 +22,7 @@ import lombok.ToString;
 //------------------------------------------------
 
 @Entity
-@Table(name="orders.OrderLine")
+@Table(name="OrderLine")
 public class OrderLine {
 	
 	@EmbeddedId

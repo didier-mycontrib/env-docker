@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm" 
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm 
+                 http://java.sun.com/xml/ns/persistence/orm_2_0.xsd" 
+                 version="2.0">
+
+<package>tp.entity.orders</package>
+
+<!-- ce fichier .orm (pour mysql) permet de redéfinir (en xml)
+    le nom de la table Order avec un caractère d'échapement pour gérer l'ambiguité lié au mot clef order (order by) 
+     -->
+
+<entity class="Order" access="FIELD">
+    	<table name="`Order`"/> 
+</entity>
+</entity-mappings>

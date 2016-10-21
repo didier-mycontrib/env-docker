@@ -20,56 +20,29 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public abstract class JpaConfig {
 	
-	@Bean
-	@Profile("h2")
-	public Database dataBaseH2(){
-		return Database.H2;
-	}
-	
-	@Bean
-	@Profile("mysql")
-	public Database dataBaseMysql(){
-		return Database.MYSQL;
-	}
-	@Bean
-	@Profile("postgres")
-	public Database dataBasePostgres(){
-		return Database.POSTGRESQL;
-	}
-	@Bean
-	@Profile("oracle")
-	public Database dataBaseOracle(){
-		return Database.ORACLE;
-	}
-	
-	@Bean("mappingResourcesFilePaths")
-	@Profile("oracle")
-	public String mappingResourcesFilePathsForOracle(){
-		return "META-INF/orm/oracle-orm.xml";
-	}
-	
-	@Bean("mappingResourcesFilePaths")
-	@Profile({"h2","mysql","postgres"})
-	public String noMappingResourcesFilePaths(){
-		return null;
-	}
-	
-	@Autowired @Qualifier("mappingResourcesFilePaths")
-	private String mappingResourcesFilePaths; //selon profile "oracle" ou autre
 
 	// JpaVendorAdapter (Hibernate ou OpenJPA ou ...)
-	@Bean
-	public JpaVendorAdapter jpaVendorAdapter(Database databaseOfProfile) {
+	//@Bean
+	public JpaVendorAdapter jpaVendorAdapterToOverride(String dbType) {
+		Database databaseOfProfile=null;
+		switch(dbType){
+		case "mysql": databaseOfProfile = Database.MYSQL; 
+			break;
+		case "postgres": databaseOfProfile = Database.POSTGRESQL; 
+		break;
+		case "oracle": databaseOfProfile = Database.ORACLE; 
+		break;
+		case "h2":
+		default:
+			       databaseOfProfile = Database.H2;
+		}
 		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
 		hibernateJpaVendorAdapter.setShowSql(false);
 		hibernateJpaVendorAdapter.setGenerateDdl(false);
 		hibernateJpaVendorAdapter.setDatabase(databaseOfProfile);//Database.H2 ou .MYSQL ou ...
-		//hibernateJpaVendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQL5InnoDBDialect"); ???
 		return hibernateJpaVendorAdapter;
 	}
 	
-	@Autowired
-	private JpaVendorAdapter selectedJpaVendorAdapter; //selon profile "h2" , "mysql" , "oracle" ou autre
 	
 	public abstract String jpaEntiyPackagesToScan();
 	
@@ -96,10 +69,21 @@ public abstract class JpaConfig {
 	
 
 	// EntityManagerFactory:
-	public EntityManagerFactory entityManagerFactoryToOverride( DataSource dataSource , String persistenceUnitName ) {
+	public EntityManagerFactory entityManagerFactoryToOverride(String dbType,JpaVendorAdapter jpaVendorAdapter, DataSource dataSource , String persistenceUnitName ) {
 			
 		LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-		factory.setJpaVendorAdapter(selectedJpaVendorAdapter);
+		factory.setJpaVendorAdapter(jpaVendorAdapter);
+		String mappingResourcesFilePaths=null;
+		switch(dbType){
+		case "oracle":
+			mappingResourcesFilePaths="META-INF/orm/"+persistenceUnitName+"/oracle-orm.xml";
+			break;
+		case "mysql":
+			mappingResourcesFilePaths="META-INF/orm/"+persistenceUnitName+"/mysql-orm.xml";
+			break;
+		default:
+			mappingResourcesFilePaths=null;
+		}
 		if(mappingResourcesFilePaths!=null){
 		    factory.setMappingResources(mappingResourcesFilePaths);
 		}

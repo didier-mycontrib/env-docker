@@ -4,34 +4,44 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.Database;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import tp.spring.config.ds.DataSourceConfigAllProfiles;
+import tp.spring.config.ds.DataSourceConfigCustomersDB;
 import tp.spring.config.jpa.JpaConfig;
 import tp.spring.config.jta.JtaConfig;
 
 @Configuration
-@Import( { DataSourceConfigAllProfiles.class , 
+@Import( { DataSourceConfigCustomersDB.class , 
            JpaConfig.class , JtaConfig.class }) 
 //@ImportResource("classpath:/xy.xml")
-@EnableTransactionManagement() //"transactionManager" (not "txManager") is expected !!!
+@EnableTransactionManagement() 
 //@ComponentScan(basePackages={"tp.dao.jpa","org.mycontrib.generic"}) //to find and interpret @Autowired, @Inject , @Component , ...
-//@EnableJpaRepositories(basePackages = "tp.dao") //entityManagerFactory , transactionManager
 @EnableJpaRepositories(
 	    basePackages = "tp.dao.customers", 
 	    entityManagerFactoryRef = "customersEntityManagerFactory", 
 	    transactionManagerRef = "customersTransactionManager"
 	)
+@PropertySource("classpath:db/customers-db/db.properties")
 public  class CustomersDaoConfig extends JpaConfig{
 	
+	@Value("${customers.db.type}")
+	private String dbType;
 	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
+		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
+	}
 	
 	@Override
 	public String jpaEntiyPackagesToScan() {
@@ -39,13 +49,17 @@ public  class CustomersDaoConfig extends JpaConfig{
 	}
 	
 	
+	@Bean("jpaVendorAdapterForCustomersDB")
+	public JpaVendorAdapter jpaVendorAdapterForCustomersDB(){
+		return jpaVendorAdapterToOverride(dbType);
+	}
 	
-	
-	@Profile({"h2" , "mysql" , "postgres" })
+
 	@Bean("customersEntityManagerFactory")
-	public EntityManagerFactory entityManagerFactory( @Qualifier("customersDataSource")DataSource dataSource) {
+	public EntityManagerFactory entityManagerFactory(  @Qualifier("jpaVendorAdapterForCustomersDB") JpaVendorAdapter jpaVendorAdapter ,
+			                                           @Qualifier("customersDataSource")DataSource dataSource) {
 		//dataSource eventuellement en mode "xa" si profile "xa"
-		return super.entityManagerFactoryToOverride(dataSource,"customers");
+		return super.entityManagerFactoryToOverride(dbType,jpaVendorAdapter ,dataSource,"customers");
 	}
 	
 	// Transaction Manager for JPA or ...

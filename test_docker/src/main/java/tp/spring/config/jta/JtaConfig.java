@@ -38,5 +38,17 @@ public class JtaConfig {
 		return jtaTransactionManager;
 	           
 	}
+	
+	/*
+	@Bean(initMethod = "init", destroyMethod = "close")
+	public ConnectionFactory connectionFactory() {
+		ActiveMQXAConnectionFactory activeMQXAConnectionFactory = new ActiveMQXAConnectionFactory();
+		activeMQXAConnectionFactory.setBrokerURL(this.environment.getProperty( "jms.broker.url")  );
+		AtomikosConnectionFactoryBean atomikosConnectionFactoryBean = new AtomikosConnectionFactoryBean();
+		atomikosConnectionFactoryBean.setUniqueResourceName("xamq");
+		atomikosConnectionFactoryBean.setLocalTransactionMode(false);
+		atomikosConnectionFactoryBean.setXaConnectionFactory(activeMQXAConnectionFactory);
+		return atomikosConnectionFactoryBean;
+	}*/
 
 }

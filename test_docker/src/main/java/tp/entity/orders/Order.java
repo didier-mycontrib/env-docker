@@ -31,7 +31,7 @@ import lombok.ToString;
 //------------------------------------------------
 
 @Entity
-@Table(name="orders.Order")
+@Table(name="Order")
 public class Order {
 	
 	@Id

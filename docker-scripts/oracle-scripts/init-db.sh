@@ -14,4 +14,4 @@ export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
 export ORACLE_SID=XE
 
 # sqlplus username/password
-${SQLPLUS}  system/oracle < ${ORACLE_SCRIPTS}/mydb.sql
+${SQLPLUS}  system/oracle < ${ORACLE_SCRIPTS}/purchases-db.sql

@@ -5,4 +5,6 @@
 # via -v option of "docker run ..." (lauched before "docker exec ...")
 
 export POSTGRES_SCRIPTS=/scripts
-psql -U postgres -f ${POSTGRES_SCRIPTS}/mydb.sql
+psql -U postgres -f ${POSTGRES_SCRIPTS}/customers-db.sql
+psql -U postgres -f ${POSTGRES_SCRIPTS}/orders-db.sql
+psql -U postgres -f ${POSTGRES_SCRIPTS}/purchases-db.sql

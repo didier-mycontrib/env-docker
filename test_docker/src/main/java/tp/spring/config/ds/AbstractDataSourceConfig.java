@@ -1,41 +1,28 @@
 package tp.spring.config.ds;
 
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.postgresql.xa.PGXADataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlXADataSource;
 
+import oracle.jdbc.xa.client.OracleXADataSource;
+
 //@PropertySource("classpath:db/h2 or mysql or postgres or oracle /db.properties")in subclass
 public abstract class   AbstractDataSourceConfig {
 	
-	@Value("${db.jdbcDriver}")
-	private String jdbcDriver;
+	private static Logger logger = LoggerFactory.getLogger(AbstractDataSourceConfig.class);
 	
-	@Value("${db.xaDataSourceClass}")
-	private String xaDataSourceClass;
 	
-	@Value("${db.url}")
-	private String dbUrl;
-	
-	@Value("${db.username}")
-	private String dbUsername;
-	
-	@Value("${db.password}")
-	private String dbPassword;
-	
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
-		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
-	}
-
 	/*
 	//@Bean(name="xy???zDataSource") selon sous-classe concrete
-	public DataSource dataSourceToOverride() {
+	public DataSource dataSourceToOverride(String jdbcDriver , String dbUrl, String dbUsername, String dbPassword) {
 		//org.apache.commons.dbcp.BasicDataSource (si .jar de commons-dbcp , commons-pool)
 		//org.springframework.jdbc.datasource.DriverManagerDataSource
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -51,7 +38,7 @@ public abstract class   AbstractDataSourceConfig {
 	
 	
 	// @Bean(name="xy???zDataSource") selon sous-classe concrete
-	public DataSource dataSourceToOverride() {
+	public DataSource dataSourceToOverride(String jdbcDriver , String dbUrl, String dbUsername, String dbPassword) {
 		//with hibernate-c3p0 in pom.xml
 		ComboPooledDataSource dataSource = new com.mchange.v2.c3p0.ComboPooledDataSource();
 		
@@ -66,44 +53,54 @@ public abstract class   AbstractDataSourceConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		logger.debug("**** DataSource with driver = "+jdbcDriver + " and url = " + dbUrl);
 		return dataSource;
 	}
 	
 	//Profile("jta") @Bean(name="xy???zDataSource",initMethod = "init", destroyMethod = "close")  selon sous-classe concrete
-		public DataSource xaDataSourceToOverride(String uniqueXaResourceName) {
+		public DataSource xaDataSourceToOverride(String xaDataSourceClass , String databaseName,String portNumber,String dbUrl,String serverName, String dbUsername, String dbPassword) {
 			AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
 			
-			if(xaDataSourceClass.equals("com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")){
+			switch(xaDataSourceClass){
+			case "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource":
 				MysqlXADataSource mysqlXaDataSource = new MysqlXADataSource();
 				mysqlXaDataSource.setUrl(dbUrl);
 				mysqlXaDataSource.setPinGlobalTxToPhysicalConnection(true);
 				mysqlXaDataSource.setPassword(dbPassword);
 				mysqlXaDataSource.setUser(dbUsername);
 				xaDataSource.setXaDataSource(mysqlXaDataSource);
+				break;
+            case "org.postgresql.xa.PGXADataSource":
+            	PGXADataSource pgXaDataSource = new PGXADataSource();
+				pgXaDataSource.setDatabaseName(databaseName);
+				pgXaDataSource.setPortNumber(Integer.parseInt(portNumber));
+				pgXaDataSource.setServerName(serverName);
+				pgXaDataSource.setPassword(dbPassword);
+				pgXaDataSource.setUser(dbUsername);
+				xaDataSource.setXaDataSource(pgXaDataSource);
+				
+				//NB: le serveur "posgresql" doit être configuré avec  max_prepared_transactions = 10 (ou autre valeur > 0)
+				break;
+            case "oracle.jdbc.xa.client.OracleXADataSource":
+            	try {
+					OracleXADataSource oracleXaDataSource = new OracleXADataSource();
+					/*
+					oracleXaDataSource.setDatabaseName(databaseName);
+					oracleXaDataSource.setPortNumber(Integer.parseInt(portNumber));
+					oracleXaDataSource.setServerName(serverName);*/
+					oracleXaDataSource.setURL(dbUrl);
+					oracleXaDataSource.setPassword(dbPassword);
+					oracleXaDataSource.setUser(dbUsername);
+					xaDataSource.setXaDataSource(oracleXaDataSource);
+				} catch (SQLException e) {
+						e.printStackTrace();
+				}
+            	break;
 			}
-			
-			xaDataSource.setUniqueResourceName(uniqueXaResourceName);
+			logger.debug("**** XADataSource (wrapped by atomikos) of class = "+xaDataSourceClass);
+			xaDataSource.setUniqueResourceName(databaseName+"XaDataSource");
 			return xaDataSource;
 		}
 		
-     /*
-      
-      @Bean(initMethod = "init", destroyMethod = "close")
-	public DataSource dataSource() {
-		MysqlXADataSource mysqlXaDataSource = new MysqlXADataSource();
-		mysqlXaDataSource.setUrl(this.environment.getProperty("dataSource.url"));
-		mysqlXaDataSource.setPinGlobalTxToPhysicalConnection(true);
-		mysqlXaDataSource.setPassword(this.environment.getProperty("dataSource.password"));
-		mysqlXaDataSource.setUser(this.environment.getProperty ("dataSource.password"));
-		//dataSource.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
-
-		AtomikosDataSourceBean xaDataSource = new AtomikosDataSourceBean();
-		xaDataSource.setXaDataSource(mysqlXaDataSource);
-		xaDataSource.setUniqueResourceName("xads");
-		return xaDataSource;
-	}
-			
-      */
-
+    
 }

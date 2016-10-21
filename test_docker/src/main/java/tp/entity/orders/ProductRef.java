@@ -21,7 +21,7 @@ import lombok.ToString;
 //------------------------------------------------
 
 @Entity
-@Table(name="orders.ProductRef")
+@Table(name="ProductRef")
 public class ProductRef {
 	
 	@Id

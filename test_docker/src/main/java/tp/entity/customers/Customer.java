@@ -23,7 +23,7 @@ import lombok.ToString;
 //------------------------------------------------
 
 @Entity
-@Table(name="customers.Customer")
+@Table(name="Customer")
 public class Customer {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

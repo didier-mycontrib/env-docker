@@ -21,7 +21,7 @@ import lombok.ToString;
 //------------------------------------------------
 
 @Entity
-@Table(name="customers.Address")
+@Table(name="Address")
 public class Address {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

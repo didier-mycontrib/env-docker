@@ -3,6 +3,7 @@
   <groupId>tp</groupId>
   <artifactId>test_docker</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
   
   <parent>
 		<groupId>org.springframework.boot</groupId>
@@ -159,7 +160,51 @@
 			<scope>test</scope>
 		</dependency>
 		
-    	
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<!-- servlet-api 2.5 for tc6 et javax.servlet-api 3.0.1 for tc7 -->
+			<!-- <version>3.1.0</version> , via spring-boot -->
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<!-- <version>${org.springframework.version}</version> , via spring-boot -->
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		<!-- <version>${org.springframework.version}</version> , via spring-boot -->
+			<scope>compile</scope>
+		</dependency>
+		
+      
+		<dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>   
+             <version>1.1.0.Final</version>
+             <scope>compile</scope>                     
+        </dependency>
+      
+		<dependency>
+     		<groupId>org.hibernate</groupId>
+     		<artifactId>hibernate-validator</artifactId>
+     		<!-- <version> <version>5.1.2.Final</version>  , via spring-boot -->
+     		<!-- <scope>runtime</scope> -->
+     		  <scope>compile</scope> 
+	   </dependency>
+	   
+	   <dependency>
+   		<groupId>javax.el</groupId>
+   		<artifactId>javax.el-api</artifactId>
+   		<version>2.2.4</version>
+	</dependency>
+	
   
   </dependencies>
   

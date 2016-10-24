@@ -34,7 +34,7 @@ public abstract class JpaConfig {
 		break;
 		case "h2":
 		default:
-			       databaseOfProfile = Database.H2;
+			       databaseOfProfile = Database.MYSQL; //Le comportement de Database.H2 est volontairement très proche de Database.MYSQL; 
 		}
 		HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
 		hibernateJpaVendorAdapter.setShowSql(false);
@@ -52,6 +52,7 @@ public abstract class JpaConfig {
 	public Properties noJtaJpaProperties(){
 		Properties jpaProperties = new Properties();
 		jpaProperties.put("javax.persistence.transactionType" ,"RESOURCE_LOCAL");
+		jpaProperties.put("javax.persistence.validation.mode", "none");//no validation (hibernate-validator) on @Entity(ies)
 		return jpaProperties;
 	}
 	
@@ -59,6 +60,7 @@ public abstract class JpaConfig {
 	@Bean("jpaProperties")
 	public Properties jtaJpaProperties(){
 		Properties jpaProperties = new Properties();
+		jpaProperties.put("javax.persistence.validation.mode", "none");
 		jpaProperties.put("javax.persistence.transactionType" ,"JTA");
 		jpaProperties.put("hibernate.transaction.jta.platform","org.mycontrib.generic.jta.jpa.atomikos.AtomikosJtaPlatform");
 		return jpaProperties;
@@ -78,7 +80,8 @@ public abstract class JpaConfig {
 		case "oracle":
 			mappingResourcesFilePaths="META-INF/orm/"+persistenceUnitName+"/oracle-orm.xml";
 			break;
-		case "mysql":
+		case "mysql":	
+		case "h2":
 			mappingResourcesFilePaths="META-INF/orm/"+persistenceUnitName+"/mysql-orm.xml";
 			break;
 		default:

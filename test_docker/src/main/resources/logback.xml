@@ -10,7 +10,7 @@
     </encoder>
   </appender>
 
-  <root level="error"> <!-- "debug" , "info" , "warn" , "error" , ... -->
+  <root level="info"> <!-- "debug" , "info" , "warn" , "error" , ... -->
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>

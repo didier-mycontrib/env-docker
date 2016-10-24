@@ -70,6 +70,13 @@ public abstract class   AbstractDataSourceConfig {
 				mysqlXaDataSource.setUser(dbUsername);
 				xaDataSource.setXaDataSource(mysqlXaDataSource);
 				break;
+			case "org.h2.jdbcx.JdbcDataSource":
+				org.h2.jdbcx.JdbcDataSource h2XaDataSource = new org.h2.jdbcx.JdbcDataSource();
+				h2XaDataSource.setUrl(dbUrl);
+				h2XaDataSource.setPassword(dbPassword);
+				h2XaDataSource.setUser(dbUsername);
+				xaDataSource.setXaDataSource(h2XaDataSource);
+				break;
             case "org.postgresql.xa.PGXADataSource":
             	PGXADataSource pgXaDataSource = new PGXADataSource();
 				pgXaDataSource.setDatabaseName(databaseName);

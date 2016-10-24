@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"      
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"     
+ xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee	http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+ version="3.1"> 
+  <display-name>springExtra-Web</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <context-param>
+    <param-name>spring.profiles.active</param-name>
+    <param-value>default,no-jta</param-value>
+    <!-- equivalent:  -Dspring.profiles.active="default,no-jta" sur ligne de commande java
+                      @ActiveProfiles("default,no-jta") sur test unitaire
+                      ou context.getEnvironment().setActiveProfiles("...") ou encore 
+                      springApplication.setAdditionalProfiles("default"  , "jta"); -->
+</context-param>
+  
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <!-- <param-value>classpath*:/springContext.xml,classpath:/springWebContext.xml</param-value> -->
+    <!-- <param-value>classpath*:/springContext.xml,classpath:/security-config.xml</param-value>
+          --> <!-- + classpath:/mvc-config.xml of DispatcherServlet -->
+          <param-value>classpath:/springContextWithJavaConfig.xml</param-value>
+  </context-param>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+   <servlet>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+         <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value></param-value> 
+            <!-- eventuellement vide indispensable pour eviter recherche de mvc-dispatcher-servlet.xml par defaut -->
+            <!-- <param-value>classpath:/mvc-config.xml</param-value> --><!-- ou eventuellement /WEB-INF/mvc-config.xml -->
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <url-pattern>/mvc/*</url-pattern>
+    </servlet-mapping>
+  <!-- 
+  <filter>
+	<filter-name>springSecurityFilterChain</filter-name>
+	<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+
+  <filter-mapping>
+	<filter-name>springSecurityFilterChain</filter-name>
+	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+  -->
+
+</web-app>

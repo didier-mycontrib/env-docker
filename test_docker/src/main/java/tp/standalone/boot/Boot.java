@@ -89,6 +89,7 @@ public class Boot {
 			
 			//a tester avec customerId=1L (existant) ou 999L (inexistant) , avec profile "jta" ou "no-jta"
 			Long newOrderId = orderAndPurchaseService.purchaseOrder(1L, listOfProductRef);
+			//Long newOrderId = orderAndPurchaseService.purchaseOrder(999L, listOfProductRef);
 			
 			Order newOrder = orderRepository.findOne(newOrderId);
 			System.out.println("new order : " + newOrder.toString());

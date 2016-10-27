@@ -38,10 +38,6 @@ public  class CustomersDaoConfig extends JpaConfig{
 	@Value("${customers.db.type}")
 	private String dbType;
 	
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
-		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
-	}
 	
 	@Override
 	public String jpaEntiyPackagesToScan() {
@@ -63,22 +59,23 @@ public  class CustomersDaoConfig extends JpaConfig{
 	}
 	
 	// Transaction Manager for JPA or ...
-	@Profile("no-jta")
-	@Bean(name= { "customersTransactionManager" , "transactionManager"} )
+	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
+	//"no-jta" in "default" Profile
+	@Bean(name= { "customersTransactionManager" /*, "transactionManager"*/} )
 	//default name is "transactionManager" for GenericDao (IL NE PEUT N'Y EN AVOIR QU'UN (dans ce profile) avec le nom "transactionManager")
 	// other names are ALIAS for  SPRING-DATA : WITH OR WITHOUT JTA
 	public PlatformTransactionManager transactionManager(@Qualifier("customersEntityManagerFactory") 
 	                                                     EntityManagerFactory entityManagerFactory) {
-			return super.jpaTransactionManagerToOverride(entityManagerFactory);
+		    return super.jpaTransactionManagerToOverride(entityManagerFactory);
 	}
 	
 	@Profile("jta")
-	@Bean(name= { "transactionManager" , "customersTransactionManager" })
-	//default name "transactionManager" for unique and global one  (JTA version) 
+	@Bean(name= {  "customersTransactionManager" })
+	//default name "transactionManager" is an alias for "springAtomikosJtaTransactionManager" : unique and global one  (JTA version) 
 	// other names are ALIAS for DAO , SPRING-DATA : WITH OR WITHOUT JTA
 	public PlatformTransactionManager jtaPransactionManager(@Qualifier("springAtomikosJtaTransactionManager") 
 	                                     PlatformTransactionManager  jtaTransactionManager) {
-			return jtaTransactionManager;
+		   	return jtaTransactionManager;
 	}
 	
 }

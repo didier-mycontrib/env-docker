@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -24,6 +26,10 @@ import lombok.ToString;
 
 @Entity
 @Table(name="Customer")
+/*
+@NamedQueries({ 
+	@NamedQuery(name="findByEmail",query="SELECT c FROM Customer c WHERE c.email=:email")
+})*/
 public class Customer {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

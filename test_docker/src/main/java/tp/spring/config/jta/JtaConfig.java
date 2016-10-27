@@ -31,7 +31,7 @@ public class JtaConfig {
 	}
 	
 	
-	@Bean(name= { "springAtomikosJtaTransactionManager" })	
+	@Bean(name= { "springAtomikosJtaTransactionManager" , "transactionManager"  })	
 	public PlatformTransactionManager springJtaTransactionManager() throws Throwable {
 		JtaTransactionManager jtaTransactionManager =  new JtaTransactionManager(  jtaUserTransaction(), jtaTransactionManager());
 		//jtaTransactionManager.setAllowCustomIsolationLevels(true);

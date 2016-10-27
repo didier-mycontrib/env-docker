@@ -11,11 +11,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   
   <context-param>
     <param-name>spring.profiles.active</param-name>
-    <param-value>default,no-jta</param-value>
-    <!-- equivalent:  -Dspring.profiles.active="default,no-jta" sur ligne de commande java
+    <param-value>with-thymeleaf</param-value>
+    <!-- equivalent:  -Dspring.profiles.active="p1,with-thymeleaf" sur ligne de commande java
                       @ActiveProfiles("default,no-jta") sur test unitaire
                       ou context.getEnvironment().setActiveProfiles("...") ou encore 
-                      springApplication.setAdditionalProfiles("default"  , "jta"); -->
+                      springApplication.setAdditionalProfiles("p1"  , "jta"); -->
 </context-param>
   
   <context-param>

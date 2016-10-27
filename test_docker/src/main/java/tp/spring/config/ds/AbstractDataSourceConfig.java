@@ -7,6 +7,8 @@ import javax.sql.DataSource;
 import org.postgresql.xa.PGXADataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -18,6 +20,11 @@ import oracle.jdbc.xa.client.OracleXADataSource;
 public abstract class   AbstractDataSourceConfig {
 	
 	private static Logger logger = LoggerFactory.getLogger(AbstractDataSourceConfig.class);
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
+		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
+	}
 	
 	
 	/*
@@ -53,7 +60,7 @@ public abstract class   AbstractDataSourceConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		logger.debug("**** DataSource with driver = "+jdbcDriver + " and url = " + dbUrl);
+		logger.info("**** DataSource with driver = "+jdbcDriver + " and url = " + dbUrl);
 		return dataSource;
 	}
 	
@@ -104,7 +111,7 @@ public abstract class   AbstractDataSourceConfig {
 				}
             	break;
 			}
-			logger.debug("**** XADataSource (wrapped by atomikos) of class = "+xaDataSourceClass);
+			logger.info("**** XADataSource (wrapped by atomikos) of class = "+xaDataSourceClass);
 			xaDataSource.setUniqueResourceName(databaseName+"XaDataSource");
 			return xaDataSource;
 		}

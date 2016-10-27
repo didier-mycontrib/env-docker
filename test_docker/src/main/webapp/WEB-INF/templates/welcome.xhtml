@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>welcome</title>
+<style>
+  body { background:#00dddd; }
+</style>
+</head>
+<body>
+    <div th:include="fragments/header :: default-header"></div>
+	<h3>welcome (spring web mvc) - menu secondaire</h3>
+	message (via thymeleaf):<b><span th:text="${message}"/></b>
+	
+	<hr/>
+	<a href="../customer/info">infos customer (version simple)</a> <br/>
+	<hr/>
+	<a href="../../index.html">retour index.html</a> <br/>
+	<hr/>	
+</body>
+</html>

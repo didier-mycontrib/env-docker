@@ -41,13 +41,8 @@ public class DataSourceConfigPurchasesDB extends AbstractDataSourceConfig {
 	@Value("${purchases.db.password}")
 	private String dbPassword;
 	
-	
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
-		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
-	}
-	
-	@Profile("no-jta")
+	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
+	//"no-jta" in "default" Profile
 	@Bean(name="purchasesDataSource")
 	public DataSource dataSource() {
 			return super.dataSourceToOverride(jdbcDriver ,dbUrl, dbUsername, dbPassword);

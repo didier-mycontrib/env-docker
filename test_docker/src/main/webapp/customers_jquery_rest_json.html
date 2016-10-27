@@ -1,0 +1,118 @@
+   <html >
+    <head>
+	<script src="js/jquery-2.2.1.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+    <script>
+	  var customerList;
+	  var customerIdSelected;//id=.id
+	  var customerSelected;
+	  
+	  function display_selected_customer(){
+	             $("#spanMsg").html( "selected customer:" + customerIdSelected) ;
+				 $('#spanId').html(customerSelected.id);
+				 $('#txtFirstName').val(customerSelected.firstName);
+				 $('#txtLastName').val(customerSelected.lastName);
+				 $('#txtEmail').val(customerSelected.email);
+				 $('#txtPhoneNumber').val(customerSelected.phoneNumber);
+	  }
+	
+	  function local_update_selected_customer(){	             
+				customerSelected.firstName = $('#txtFirstName').val();
+				customerSelected.lastName = $('#txtLastName').val();
+				customerSelected.email= $('#txtEmail').val();
+				customerSelected.phoneNumber= $('#txtPhoneNumber').val();
+	  }
+	  
+      $(function() {
+	 	  
+	    $.ajax({
+           type: "GET",
+           url: "mvc/rest/customers/",
+		   success: function (data,status,xhr) {
+			   /*if(xhr){
+				   var csrfToken = xhr.getResponseHeader("Content-Type");// "Content-Type"				
+				   //alert(csrfToken);
+			   }*/
+               if (data) {
+			       //alert(JSON.stringify(data));
+			       customerList = data;
+				   for(customerIndex in customerList){
+				       var customer=customerList[customerIndex];
+					   if(customerIndex==0)
+					      { customerSelected = customer; customerIdSelected = customer.id; }
+				       //alert(JSON.stringify(customer));
+				       $('#selCustomer').append('<option  value="'+ customer.id +'">'+ customer.id + ' (' + customer.firstName + '-' +  customer.lastName + ')</option>');					   
+				   }
+				   display_selected_customer();
+               } else {
+                   $("#spanMsg").html("Cannot GET customers !");
+               }
+           }
+		   });
+        
+		
+	    //for spring-mvc RESTful WS and spring-security with CookieCsrfTokenRepository
+	    var xsrfToken = $.cookie('XSRF-TOKEN');//necessite plugin jquery-cookie
+	    //alert(xsrfToken);
+	    if(xsrfToken){
+	      $(document).ajaxSend(function(e, xhr, options) {
+	    	        xhr.setRequestHeader('X-XSRF-TOKEN', xsrfToken);
+	    	});
+	    }
+	    
+		$('#btnUpdate').on('click',function(){
+		 local_update_selected_customer();
+		 
+		//$("#spanMsg").html( "message in the bottle" + JSON.stringify(customerSelected) ) ;
+		 $.ajax({
+           type: "PUT",
+           url: "mvc/rest/customers/",
+           dataType: "json",
+		   data: JSON.stringify(customerSelected),
+           success: function (updatedData) {
+               if (updatedData) {
+                  $("#spanMsg").html("updated data (server side):" + JSON.stringify(updatedData));
+               } else {
+                   $("#spanMsg").html("Cannot PUT updated data");
+               }
+           },
+           error: function(xhr, status, error){
+        	   $("#spanMsg").html( "status:" + status + " error : " + error ) ;
+           }
+		   });
+		});
+	
+		
+		$('#selCustomer').on('change',function(evt){
+		         customerIdSelected = $(evt.target).val();
+				 for(customerIndex in customerList){
+				       var customer=customerList[customerIndex];
+					   if(customer.id == customerIdSelected)
+					       customerSelected  = customer;
+				 }
+				 display_selected_customer();
+		});
+      }); 
+   </script>
+   </head>
+     <body>
+	
+       <h3> JSON tests for customers ws (REST/JSON via spring) <h3>
+	   <a href="mvc/rest/customers/1"> customer avec id=1 </a> <br/>
+	   <a href="mvc/rest/customers/?email=alex-therieur@iciOulaBas.fr"> customer avec email=alex-therieur@iciOulaBas.fr </a> <br/>
+	   <a href="mvc/rest/customers/"> tous les clients </a> <br/>
+
+      <hr/>
+	  customer (to update) : <select id="selCustomer"> </select>
+	  <hr/>
+	  id : <span id="spanId" ></span><br/>
+	  firstName : <input id="txtFirstName" type='text' /><br/>
+	  lastName : <input id="txtLastName" type='text' /><br/>
+	  email : <input id="txtEmail" type='text' /><br/>
+	  phoneNumber : <input id="txtPhoneNumber" type='text' /><br/>
+	  <input type='button' value="update customer" id="btnUpdate"/> <br/>
+	  <span id="spanMsg"></span> <br/>
+	  <hr/>
+	  <a href="index.html">retour vers index.html</a>
+	  </body>
+     </html>

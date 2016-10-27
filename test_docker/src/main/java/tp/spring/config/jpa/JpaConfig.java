@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -19,6 +20,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
 public abstract class JpaConfig {
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
+		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
+	}
 	
 
 	// JpaVendorAdapter (Hibernate ou OpenJPA ou ...)
@@ -46,8 +52,8 @@ public abstract class JpaConfig {
 	
 	public abstract String jpaEntiyPackagesToScan();
 	
-		
-	@Profile("no-jta")
+	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
+	//"no-jta" in "default" Profile
 	@Bean("jpaProperties")
 	public Properties noJtaJpaProperties(){
 		Properties jpaProperties = new Properties();
@@ -67,7 +73,7 @@ public abstract class JpaConfig {
 	}
 	
 	@Autowired @Qualifier("jpaProperties")
-	private Properties selectedJpaProperties; //selon profile "jta" ou "non-jta"
+	private Properties selectedJpaProperties; //selon profile "jta" ou "default/no-jta"
 	
 
 	// EntityManagerFactory:

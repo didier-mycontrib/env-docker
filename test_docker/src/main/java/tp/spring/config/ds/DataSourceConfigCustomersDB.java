@@ -43,22 +43,20 @@ public class DataSourceConfigCustomersDB extends AbstractDataSourceConfig {
 	@Value("${customers.db.password}")
 	private String dbPassword;
 	
-	
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
-		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
-	}
-	
-	@Profile("no-jta")
-	@Bean(name="customersDataSource")
-	public DataSource dataSource() {
-		return super.dataSourceToOverride(jdbcDriver ,dbUrl, dbUsername, dbPassword);
-	}
-	
 	@Profile("jta")
 	@Bean(name="customersDataSource",initMethod = "init", destroyMethod = "close")
 	public DataSource xaDataSource() {
 		return super.xaDataSourceToOverride(xaDataSourceClass,databaseName,portNumber,
 				                            dbUrl,serverName,dbUsername,dbPassword);
 	}
+	
+
+	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
+	//no-jta in "default" profile
+	@Bean(name="customersDataSource")
+	public DataSource dataSource() {
+		return super.dataSourceToOverride(jdbcDriver ,dbUrl, dbUsername, dbPassword);
+	}
+	
+	
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import tp.dao.customers.CustomerRepository;
@@ -26,15 +27,17 @@ public class Boot {
 	
 	public static void main(String[] args) {
 		// on prépare la configuration de l'application en mode spring-boot
-		SpringApplication app = new SpringApplication(DomainServiceConfig.class);
+		
+	     SpringApplication app = new SpringApplication(DomainServiceConfig.class);
 		
 		
 		app.setWebEnvironment(false);
 		//app.setLogStartupInfo(false);
 		
 		//setting profile (context.getEnvironment().setActiveProfiles("...") ) :
-		app.setAdditionalProfiles("default"  , "jta"); 
-		//app.setAdditionalProfiles("default"  , "no-jta"); 
+		
+		app.setAdditionalProfiles( "jta"); 
+		// "no-jta" in "default" profile; 
 		
 		// on lance l'application spring
 		ConfigurableApplicationContext context =  app.run(args);

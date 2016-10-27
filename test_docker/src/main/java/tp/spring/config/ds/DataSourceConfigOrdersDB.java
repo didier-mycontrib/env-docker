@@ -44,12 +44,8 @@ public class DataSourceConfigOrdersDB extends AbstractDataSourceConfig {
 	private String dbPassword;
 	
 	
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
-		return new PropertySourcesPlaceholderConfigurer(); //to interpret ${} in @Value()
-	}
-	
-	@Profile("no-jta")
+	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
+	//"no-jta" in "default" Profile
 	@Bean(name="ordersDataSource")
 	public DataSource dataSource() {
 		return super.dataSourceToOverride(jdbcDriver ,dbUrl, dbUsername, dbPassword);

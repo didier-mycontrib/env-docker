@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import tp.spring.config.DomainServiceConfig;
 
 @Configuration
-@Import( { DomainServiceConfig.class , MvcConfig.class}) 
+@Import( {   MvcConfig.class , DomainServiceConfig.class}) 
 public class WebAppConfig {
 	
    

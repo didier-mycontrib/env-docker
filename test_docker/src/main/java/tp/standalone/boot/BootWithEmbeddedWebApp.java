@@ -12,6 +12,11 @@ public class BootWithEmbeddedWebApp {
 	
 	
 	public static void main(String[] args) {
+		if(PreBoot.testDatabasesBeforeLaunchingApp(true,true)==false){
+			System.err.println("one database is not already initialized - application cannot start");
+			System.exit(1);
+		}
+			
 		// on prépare la configuration de l'application en mode spring-boot
 		
 	     SpringApplication app = new SpringApplication(StandaloneWebAppConfigWithEmbbededTomcat.class);
@@ -27,14 +32,8 @@ public class BootWithEmbeddedWebApp {
 		// on lance l'application spring
 		ConfigurableApplicationContext context =  app.run(args);
 		
-	}
-
-	// méthode utilitaire - affiche les éléments d'une collection
-	private static <T> void display(String message, Iterable<T> elements) {
-		System.out.println(message);
-		for (T e : elements) {
-			System.out.println("\t"+e);
-		}
+		System.out.println("localhost:8080/testDockerSpringBootWeb");
+		
 	}
 
 }

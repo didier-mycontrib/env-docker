@@ -1,0 +1,19 @@
+   <dataset>  
+     <!--  <TableName column1Name="value1_ofRow1" column2Name="value2_ofRow1""/>  -->
+     <!--  <TableName column1Name="value1_ofRow2" column2Name="value2_ofRow2""/>  -->
+     <!-- <Table eventuellement sans pkColumn="..." if auto_increment /> -->
+     
+     <!-- pour test avec  GenericSpringDataJpaTestWithDbUnit ou bien com.github.springtestdbunit  --> 
+    
+    
+    <!-- Attention: il faut respecter un ordre cohérent avec les contraintes d'intégrité référentielles  
+      sauf si statement.execute("set global foreign_key_checks=0"); pour MySql ou ...
+      dans BasicDBHelper.reInitDataBaseFromInitialDataSet() -->
+    
+    <Address id="1" zip="75000"  numberAndStreet="007 rue elle" town="Par ici" country="France" /> 
+             
+      <Customer  id="1" firstName="didier"  lastName="Defrance"   addressId="1"
+                 phoneNumber="0102030405"  email="didier@ici_ou_la" />
+              
+     
+   </dataset>  

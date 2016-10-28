@@ -19,7 +19,7 @@ import tp.entity.orders.ProductRef;
 import tp.service.OrderAndPurchaseService;
 import tp.spring.config.DomainServiceConfig;
 
-public class Boot {
+public class AlternativeConsoleTestBoot {
 	// le boot en mode console/text .
 	
 	

@@ -59,7 +59,7 @@ public  class CustomersDaoConfig extends JpaConfig{
 	}
 	
 	// Transaction Manager for JPA or ...
-	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
+	@Profile("!jta") //NB: @Profile("default") different de "pas de @Profile"
 	//"no-jta" in "default" Profile
 	@Bean(name= { "customersTransactionManager" /*, "transactionManager"*/} )
 	//default name is "transactionManager" for GenericDao (IL NE PEUT N'Y EN AVOIR QU'UN (dans ce profile) avec le nom "transactionManager")
@@ -73,7 +73,7 @@ public  class CustomersDaoConfig extends JpaConfig{
 	@Bean(name= {  "customersTransactionManager" })
 	//default name "transactionManager" is an alias for "springAtomikosJtaTransactionManager" : unique and global one  (JTA version) 
 	// other names are ALIAS for DAO , SPRING-DATA : WITH OR WITHOUT JTA
-	public PlatformTransactionManager jtaPransactionManager(@Qualifier("springAtomikosJtaTransactionManager") 
+	public PlatformTransactionManager jtaTransactionManager(@Qualifier("springAtomikosJtaTransactionManager") 
 	                                     PlatformTransactionManager  jtaTransactionManager) {
 		   	return jtaTransactionManager;
 	}

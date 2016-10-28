@@ -1,4 +1,4 @@
-package org.apache.ibatis.jdbc;
+package org.mycontrib.database.util.copy.of.org.apache.ibatis.jdbc;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;

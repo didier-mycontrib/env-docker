@@ -10,10 +10,28 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
-@PropertySource("classpath:db/customers-db/db.properties")
+//@PropertySource("classpath:db/customers-db/db.properties")
 //@Conditional({ MyXyCondition.class})
 public class DataSourceConfigCustomersDB extends AbstractDataSourceConfig {
 	
+	@Configuration
+    @Profile({"!test","!mem-test"})
+	@PropertySource("classpath:db/customers-db/db.properties")
+    static class Defaults
+    { }
+
+    @Configuration
+    @Profile({"test"})
+    @PropertySource("classpath:db/customers-db/test-db.properties")
+    static class OverridesTest
+    { }
+    
+    @Configuration
+    @Profile({"mem-test"})
+    @PropertySource("classpath:db/customers-db/mem-test-db.properties")
+    static class OverridesTestMem
+    { }
+       
 	/*
 	@Value("${customers.db.type}")
 	private String dbType;
@@ -51,9 +69,9 @@ public class DataSourceConfigCustomersDB extends AbstractDataSourceConfig {
 	}
 	
 
-	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
-	//no-jta in "default" profile
-	@Bean(name="customersDataSource")
+	//@Profile({"default"})
+	@Profile("!jta")//NB: @Profile("default") different de "aucun @Profile" et diffrent de @Profile("!jta")
+	@Bean(name="customersDataSource", destroyMethod = "close")
 	public DataSource dataSource() {
 		return super.dataSourceToOverride(jdbcDriver ,dbUrl, dbUsername, dbPassword);
 	}

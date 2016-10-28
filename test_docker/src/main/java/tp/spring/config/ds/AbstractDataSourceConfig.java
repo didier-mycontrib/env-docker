@@ -113,6 +113,14 @@ public abstract class   AbstractDataSourceConfig {
 			}
 			logger.info("**** XADataSource (wrapped by atomikos) of class = "+xaDataSourceClass);
 			xaDataSource.setUniqueResourceName(databaseName+"XaDataSource");
+			
+			try {
+				xaDataSource.setMinPoolSize(1);
+				xaDataSource.setMaxPoolSize(20);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+			
 			return xaDataSource;
 		}
 		

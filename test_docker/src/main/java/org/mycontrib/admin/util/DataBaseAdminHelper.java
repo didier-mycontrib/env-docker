@@ -44,14 +44,14 @@ public class DataBaseAdminHelper {
 	
 	public static void initDatabaseSchema(DataSource ds , String databaseType , String databaseName){
 		//specifig/natives Sql
-		String sqlScriptClassPath = "db/" + databaseType + "/" + databaseName + "-db/schema/database-schema.sql";
+		String sqlScriptClassPath = "db/" + databaseName + "-db/" + databaseType + "/schema/database-schema.sql";
 		DataBaseUtilHelper.runSqlScript(ds,sqlScriptClassPath);
 		
 	}
 	
 	public static void insertInitialDefaultDataInDatabase(DataSource ds , String databaseName ){
 		//generic jdbc sql
-		String sqlScriptClassPath = "db/default-init-data/" + databaseName +"-db/init-data.sql";
+		String sqlScriptClassPath = "db/" + databaseName +"-db/default-init-data.sql";
 		DataBaseUtilHelper.runSqlScript(ds,sqlScriptClassPath);
 	}
 	

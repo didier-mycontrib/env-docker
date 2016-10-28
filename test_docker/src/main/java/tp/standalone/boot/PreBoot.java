@@ -1,25 +1,21 @@
 package tp.standalone.boot;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.sql.DataSource;
 
 import org.mycontrib.admin.util.DataBaseAdminHelper;
+import org.mycontrib.database.util.DataBaseUtilHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import tp.dao.customers.CustomerRepository;
-import tp.dao.orders.OrderRepository;
-import tp.entity.customers.Customer;
-import tp.entity.orders.Order;
-import tp.entity.orders.ProductRef;
-import tp.service.OrderAndPurchaseService;
-import tp.spring.config.DomainServiceConfig;
+import tp.spring.config.ds.DataSourceConfigCustomersDB;
+import tp.spring.config.ds.DataSourceConfigOrdersDB;
+import tp.spring.config.ds.DataSourceConfigPurchasesDB;
 
 public class PreBoot {
+	
+	private static Logger logger = LoggerFactory.getLogger(PreBoot.class) ;
 	// le boot en mode console/text .
 	
 	/*
@@ -33,62 +29,92 @@ public class PreBoot {
 	*/
 	
 	
+	
 	public static void main(String[] args) {
+		System.out.println("testDatabasesBeforeLaunchingApp : " + testDatabasesBeforeLaunchingApp(true,true) );
+	}
+	
+	public static boolean testDatabasesBeforeLaunchingApp(boolean initSchemaIfNecessary , boolean initDefaultDataIfNecessary) {
+		boolean db1Ready = true;
+		boolean db2Ready = true;
+		boolean db3Ready = true;
 		// on prépare la configuration de l'application en mode spring-boot
-		SpringApplication app = new SpringApplication(DomainServiceConfig.class);
+		SpringApplication app = new SpringApplication(DataSourceConfigCustomersDB.class , DataSourceConfigOrdersDB.class , DataSourceConfigPurchasesDB.class);
 		
 		app.setWebEnvironment(false);
-		//app.setLogStartupInfo(false);
-		
-		//setting profile (context.getEnvironment().setActiveProfiles("...") ) :
-		app.setAdditionalProfiles("default" , "mysql"  , "no-jta"); 
-		//app.setAdditionalProfiles("default" , "oracle" ); 
-		//app.setAdditionalProfiles("default" , "h2" ); 
+		//app.setAdditionalProfiles("..." , "..." ); 
 		
 		// on lance l'application spring
-		ConfigurableApplicationContext context =  app.run(args);
+		ConfigurableApplicationContext context =  app.run();
 		
 		try {
-			 //test temporaire:
-			
-			   //DataSource ds = context.getBean(DataSource.class);
-			  
-			   DataSource ds1 = (DataSource) context.getBean("customersDataSource");
-			   DataBaseAdminHelper.initDatabaseSchema(ds1, "mysql" , "customers");
-			   DataBaseAdminHelper.insertInitialDefaultDataInDatabase(ds1, "customers");
-			   Connection cn = ds1.getConnection();
-			   ResultSet rs = cn.createStatement().executeQuery("select * from Customer");
-			   if(rs.next()){
-				   System.out.println("email of customer="+rs.getString("email"));
-			   }
-			   rs.close();cn.close();
-			 
-			
+			   try {
+				DataSource ds1 = (DataSource) context.getBean("customersDataSource");
+				   if(DataBaseUtilHelper.test_database_schema_initialization(ds1,"Customer")){
+					   logger.info("database customers is ready [ accessible and with table(s) ]");
+				   }
+				   else{
+					   db1Ready=false;
+					   if(initSchemaIfNecessary){
+					      DataBaseAdminHelper.initDatabaseSchema(ds1, "mysql" , "customers");
+					      db1Ready=true;
+					      if(initDefaultDataIfNecessary)
+					         DataBaseAdminHelper.insertInitialDefaultDataInDatabase(ds1, "customers");
+					   }
+				   }
+				} catch (Exception e) {
+					    db1Ready = false;
+						logger.error("Exception : " + e.getMessage());
+				}
+			   
+			   
+			  try{
 			   DataSource ds2 =  (DataSource) context.getBean("ordersDataSource");
-			   DataBaseAdminHelper.initDatabaseSchema(ds2, "mysql" , "orders");
-			   DataBaseAdminHelper.insertInitialDefaultDataInDatabase(ds2, "orders");
+			   if(DataBaseUtilHelper.test_database_schema_initialization(ds2,"OrderLine")){
+				   logger.info("database orders is ready [ accessible and with table(s) ]");
+			   }
+			   else{
+				   db2Ready=false;
+				   if(initSchemaIfNecessary){
+					   DataBaseAdminHelper.initDatabaseSchema(ds2, "mysql" , "orders");
+					   db2Ready=true;
+					   if(initDefaultDataIfNecessary)
+					      DataBaseAdminHelper.insertInitialDefaultDataInDatabase(ds2, "orders");
+				   }
+			   }
+			  } catch (Exception e) {
+				    db2Ready = false;
+					logger.error("Exception : " + e.getMessage());
+			   }
 			  
+			  try{
 			   DataSource ds3 =  (DataSource) context.getBean("purchasesDataSource");
-			   DataBaseAdminHelper.initDatabaseSchema(ds3, "mysql" , "purchases");
-			   DataBaseAdminHelper.insertInitialDefaultDataInDatabase(ds3, "purchases");
-			 
-			   //fin test temporaire
-
-		 
+			   if(DataBaseUtilHelper.test_database_schema_initialization(ds3,"Purchase")){
+				   logger.info("database purchases is ready [ accessible and with table(s) ]");
+			   }
+			   else{
+				   db3Ready=false;
+				   if(initSchemaIfNecessary){
+					   DataBaseAdminHelper.initDatabaseSchema(ds3, "mysql" , "purchases");
+					   db3Ready=true;
+					   if(initDefaultDataIfNecessary)
+						   DataBaseAdminHelper.insertInitialDefaultDataInDatabase(ds3, "purchases");
+				   }
+			   }
+			  } catch (Exception e) {
+				    db3Ready = false;
+					logger.error("Exception : " + e.getMessage());
+			   }
+			   
+					 
 		} catch (Exception ex) {
-			System.err.println("Exception : " + ex.getMessage());
+			logger.error("Exception : " + ex.getMessage());
 		}finally{
 		// fermeture du contexte Spring
 		context.close();
 		}
+		return (db1Ready && db2Ready && db3Ready);
 	}
 
-	// méthode utilitaire - affiche les éléments d'une collection
-	private static <T> void display(String message, Iterable<T> elements) {
-		System.out.println(message);
-		for (T e : elements) {
-			System.out.println("\t"+e);
-		}
-	}
 
 }

@@ -1,0 +1,9 @@
+   <dataset>  
+   <!-- pour test avec  GenericSpringDataJpaTestWithDbUnit et pas com.github.springtestdbunit  --> 
+  
+      <Customer  lastName="therieur" firstName="alain"  addressId="1"
+                 phoneNumber="0102030405"  email="alain.therieur@ici_ou_la" />
+       
+    
+    
+   </dataset>  

@@ -22,8 +22,7 @@ import tp.spring.config.DomainServiceConfig;
 public class MvcConfig /* extends WebMvcConfigurerAdapter*/ {
 	
 	//version standard (sans thymeleaf): 
-	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
-	//without-thymeleaf in "default profile
+	@Profile("!with-thymeleaf") //NB: @Profile("default") different de "aucun @Profile" et différent de @Profile("!with-thymeleaf")
 	@Bean
     public ViewResolver viewResolver () {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();

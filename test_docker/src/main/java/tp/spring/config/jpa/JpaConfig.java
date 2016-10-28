@@ -52,8 +52,7 @@ public abstract class JpaConfig {
 	
 	public abstract String jpaEntiyPackagesToScan();
 	
-	@Profile("default") //NB: @Profile("default") different de "pas de @Profile"
-	//"no-jta" in "default" Profile
+	@Profile("!jta")
 	@Bean("jpaProperties")
 	public Properties noJtaJpaProperties(){
 		Properties jpaProperties = new Properties();
@@ -74,6 +73,24 @@ public abstract class JpaConfig {
 	
 	@Autowired @Qualifier("jpaProperties")
 	private Properties selectedJpaProperties; //selon profile "jta" ou "default/no-jta"
+	
+	@Profile("!mem-test")
+	@Bean("ddlAutoHbjpaProperties")
+	public Properties withoutDdlAutoHbjpaProperties(){
+		Properties ddlAutoHbjpaProperties = new Properties();
+		return ddlAutoHbjpaProperties; //empty property list
+	}
+	
+	@Profile("mem-test")
+	@Bean("ddlAutoHbjpaProperties")
+	public Properties withDdlAutoHbjpaProperties(){
+		Properties ddlAutoHbjpaProperties = new Properties();
+		ddlAutoHbjpaProperties.put("hibernate.hbm2ddl.auto","update"); //"update" , "create-drop" , "none"
+		return ddlAutoHbjpaProperties;
+	}
+	
+	@Autowired @Qualifier("ddlAutoHbjpaProperties")
+	private Properties selectedDdlAutoHbjpaProperties; //selon absence ou presence du profile "mem-test"
 	
 
 	// EntityManagerFactory:
@@ -101,6 +118,10 @@ public abstract class JpaConfig {
 		
 		factory.setDataSource(dataSource);
 		//factory.setJtaDataSource(dataSource); // set dataSource and set jpaProperties.put("javax.persistence.transactionType" ,"JTA");
+		
+		if(!selectedDdlAutoHbjpaProperties.isEmpty()){
+			selectedJpaProperties.putAll(selectedDdlAutoHbjpaProperties);
+		}
 		
 		factory.setJpaProperties(selectedJpaProperties);
 		

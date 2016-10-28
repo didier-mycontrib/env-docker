@@ -1,4 +1,4 @@
-package tp.test;
+package tp.test.jdbc;
 
 import org.junit.After;
 import org.junit.Assert;

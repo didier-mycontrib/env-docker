@@ -1,4 +1,4 @@
-package org.apache.ibatis.io;
+package org.mycontrib.database.util.copy.of.org.apache.ibatis.io;
 
 import java.io.*;
 import java.net.URL;

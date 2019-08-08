@@ -1,0 +1,34 @@
+# docker-compose file for "Angular app in nginx + REST api in nodeJs/express + mysql DB"
+# version must be '3.0' or '3.1' for docker stack and must be '2.0' for (old) docker-compose
+version: '2.0'
+networks:
+  mynetwork:
+    driver: bridge
+
+services:
+  db:
+    image: xyz/devise-db
+    ports:
+      - 3306:3306
+    networks:
+      mynetwork:
+        aliases:
+          - devise.db.host
+          - devise.db.service
+
+  backend-api:
+    image: xyz/devise-api
+    ports:
+      - 8282:8282
+    networks:
+      mynetwork:
+        aliases:
+          - devise.api.host
+          - devise.api.service
+
+  frontend:
+    image: xyz/devise-ngapp
+    ports:
+      - 80:80
+    networks:
+      mynetwork:

@@ -81,7 +81,7 @@
   <dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId> <!-- h2 est par certains cotes un peu mieux que hsqldb -->
-			<version>1.4.192</version> <!-- en accord avec  spring boot 1.4.1.RELEASE --> 
+			<version>2.1.210</version> <!-- en accord avec  spring boot 1.4.1.RELEASE --> 
 		</dependency>
   
   <dependency>
